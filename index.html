@@ -14,10 +14,29 @@
 
       .grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         grid-template-rows: 1fr 2fr;
         grid-column-gap: 20px;
         grid-row-gap: 0px;
+      }
+
+      .a {
+        grid-area: 1 / 1 / 2 / 3;
+      }
+      .b {
+        grid-area: 1 / 3 / 2 / 5;
+      }
+      .same {
+        grid-area: 2 / 1 / 3 / 2;
+      }
+      .diff {
+        grid-area: 2 / 2 / 3 / 3;
+      }
+      .diff-a {
+        grid-area: 2 / 3 / 3 / 4;
+      }
+      .diff-b {
+        grid-area: 2 / 4 / 3 / 5;
       }
 
       textarea {
@@ -37,30 +56,42 @@
     </header>
 
     <main class="grid">
-      <section>
+      <section class="a">
         <h2>A</h2>
         <textarea rows="10" id="A"></textarea>
       </section>
-
-      <section>
+      <section class="b">
         <h2>B</h2>
         <textarea rows="10" id="B"></textarea>
       </section>
 
-      <section>
+      <section class="same">
         <h2>Same (readonly)</h2>
         <textarea rows="10" id="Same" readonly></textarea>
       </section>
-      <section>
-        <h2>Diff (readonly)</h2>
+      <section class="diff">
+        <h2>Diff(readonly)</h2>
         <textarea rows="10" id="Diff" readonly></textarea>
+      </section>
+      <section class="diff-a">
+        <h2>Diff A by B(readonly)</h2>
+        <textarea rows="10" id="DiffA" readonly></textarea>
+      </section>
+      <section class="diff-b">
+        <h2>Diff B by A(readonly)</h2>
+        <textarea rows="10" id="DiffB" readonly></textarea>
       </section>
     </main>
 
     <script>
-      const [aTextarea, bTextarea, sameTextarea, diffTextarea] = Array.from(
-        document.querySelectorAll("textarea")
-      );
+      const [
+        aTextarea,
+        bTextarea,
+        sameTextarea,
+        diffTextarea,
+        diffATextarea,
+        diffBTextarea,
+      ] = Array.from(document.querySelectorAll("textarea"));
 
       // from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations
       const intersection = (setA, setB) => {
@@ -73,7 +104,7 @@
         return _intersection;
       };
 
-      const difference = (setA, setB) => {
+      const symmetricDifference = (setA, setB) => {
         const _difference = new Set(setA);
         for (const elem of setB) {
           if (_difference.has(elem)) {
@@ -85,11 +116,23 @@
         return _difference;
       };
 
+      const difference = (setA, setB) => {
+        const _difference = new Set(setA);
+        for (const elem of setB) {
+          _difference.delete(elem);
+        }
+        return _difference;
+      };
+
       const check = () => {
         const a = new Set(aTextarea.value.split("\n").filter((v) => v !== ""));
         const b = new Set(bTextarea.value.split("\n").filter((v) => v !== ""));
         sameTextarea.value = Array.from(intersection(a, b).values()).join("\n");
-        diffTextarea.value = Array.from(difference(a, b).values()).join("\n");
+        diffTextarea.value = Array.from(
+          symmetricDifference(a, b).values()
+        ).join("\n");
+        diffATextarea.value = Array.from(difference(a, b).values()).join("\n");
+        diffBTextarea.value = Array.from(difference(b, a).values()).join("\n");
       };
 
       aTextarea.addEventListener("change", () => check());
