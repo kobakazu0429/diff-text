@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diff Text</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 20px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 1fr 2fr;
+        grid-column-gap: 20px;
+        grid-row-gap: 0px;
+      }
+
+      textarea {
+        width: 100%;
+      }
+
+      textarea:read-only {
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Diff Text</h1>
+      <p>input: A and B</p>
+      <p>output: Same and Diff</p>
+    </header>
+
+    <main class="grid">
+      <section>
+        <h2>A</h2>
+        <textarea rows="10" id="A"></textarea>
+      </section>
+
+      <section>
+        <h2>B</h2>
+        <textarea rows="10" id="B"></textarea>
+      </section>
+
+      <section>
+        <h2>Same (readonly)</h2>
+        <textarea rows="10" id="Same" readonly></textarea>
+      </section>
+      <section>
+        <h2>Diff (readonly)</h2>
+        <textarea rows="10" id="Diff" readonly></textarea>
+      </section>
+    </main>
+
+    <script>
+      const [aTextarea, bTextarea, sameTextarea, diffTextarea] = Array.from(
+        document.querySelectorAll("textarea")
+      );
+
+      // from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations
+      const intersection = (setA, setB) => {
+        const _intersection = new Set();
+        for (const elem of setB) {
+          if (setA.has(elem)) {
+            _intersection.add(elem);
+          }
+        }
+        return _intersection;
+      };
+
+      const difference = (setA, setB) => {
+        const _difference = new Set(setA);
+        for (const elem of setB) {
+          if (_difference.has(elem)) {
+            _difference.delete(elem);
+          } else {
+            _difference.add(elem);
+          }
+        }
+        return _difference;
+      };
+
+      const check = () => {
+        const a = new Set(aTextarea.value.split("\n").filter((v) => v !== ""));
+        const b = new Set(bTextarea.value.split("\n").filter((v) => v !== ""));
+        sameTextarea.value = Array.from(intersection(a, b).values()).join("\n");
+        diffTextarea.value = Array.from(difference(a, b).values()).join("\n");
+      };
+
+      aTextarea.addEventListener("change", () => check());
+      bTextarea.addEventListener("change", () => check());
+    </script>
+  </body>
+</html>
