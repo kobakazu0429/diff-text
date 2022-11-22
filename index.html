@@ -12,6 +12,14 @@
         padding: 20px;
       }
 
+      header > div {
+        display: flex;
+      }
+
+      header img {
+        width: 400px;
+      }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -51,8 +59,15 @@
   <body>
     <header>
       <h1>Diff Text</h1>
-      <p>input: A and B</p>
-      <p>output: Same and Diff</p>
+      <div>
+        <div>
+          <p>input: A and B</p>
+          <p>output: Same and Diff</p>
+        </div>
+        <div>
+          <img src="./chart.svg" alt="" />
+        </div>
+      </div>
     </header>
 
     <main class="grid">
@@ -66,19 +81,19 @@
       </section>
 
       <section class="same">
-        <h2>Same (readonly)</h2>
+        <h2>A ∩ B (readonly)</h2>
         <textarea rows="10" id="Same" readonly></textarea>
       </section>
       <section class="diff">
-        <h2>Diff(readonly)</h2>
+        <h2>A' + B' (readonly)</h2>
         <textarea rows="10" id="Diff" readonly></textarea>
       </section>
       <section class="diff-a">
-        <h2>Diff A by B(readonly)</h2>
+        <h2>A' (readonly)</h2>
         <textarea rows="10" id="DiffA" readonly></textarea>
       </section>
       <section class="diff-b">
-        <h2>Diff B by A(readonly)</h2>
+        <h2>B' (readonly)</h2>
         <textarea rows="10" id="DiffB" readonly></textarea>
       </section>
     </main>
